@@ -1,2 +1,2 @@
-# mark-my-tabs
+# Mark My Tab
 A small Firefox extension for marking tabs with one of prefefined icons.
