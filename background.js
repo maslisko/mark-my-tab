@@ -24,7 +24,7 @@ async function requestPermissions() {
 
 function messageTab(tab) {
   browser.tabs.sendMessage(tab.id, {
-    replacement: "Message from the extension!",
+    newTitle: "###",
   });
 }
 
