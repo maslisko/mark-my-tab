@@ -10,17 +10,17 @@
   },
   "permissions": [
     "<all_urls>",
+    "menus",
     "tabs",
     "storage"
   ],
-  "content_scripts": [
-    {
-      "matches": [
-        "<all_urls>"
-      ],
-      "js": [
-        "markMyTab.js"
-      ]
+  "background": {
+    "scripts": ["markMyTab.js"]
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "mark-my-tab@maslisko"
     }
-  ]
+  }
+  
 }

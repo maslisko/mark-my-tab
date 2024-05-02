@@ -1,3 +1,6 @@
+console.log(`I am here`);
+
+
 const permissionsToRequest = {
     permissions: ["tabs"],
     origins: ["<all_urls>"],
@@ -21,15 +24,15 @@ const permissionsToRequest = {
   
 requestPermissions().then();
 
-browser.contextMenus.create({
+browser.menus.create({
     id: "icon-selection",
     type:"normal",
     title: "Mark My Tab:",
-    contexts: ["all"],
+    contexts: ['tab']
   });
 //Tab.favIconUrl
 
-browser.contextMenus.onClicked.addListener((info, tab) => {
+browser.menus.onClicked.addListener((info, tab) => {
     if (info.menuItemId === "icon-selection") {
       console.log(info.selectionText);
     }
