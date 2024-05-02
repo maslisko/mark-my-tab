@@ -51,7 +51,6 @@ browser.contextMenus.onClicked.addListener((info, tab) => {
       file: "mark-my-tab.js",
     });
     executing.then(() => {
-      console.log("id: " + tab.id);
       onExecuted(tab.id);
     });
   }
