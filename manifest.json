@@ -10,12 +10,14 @@
   },
   "permissions": [
     "<all_urls>",
+    "activeTab",
+    "contextMenus",
     "menus",
     "tabs",
     "storage"
   ],
   "background": {
-    "scripts": ["markMyTab.js"]
+    "scripts": ["background.js"]
   },
   "browser_specific_settings": {
     "gecko": {
