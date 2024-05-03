@@ -21,10 +21,9 @@ async function requestPermissions() {
   console.log(`Current permissions:`, currentPermissions);
 }
 
-
 function messageTab(tab) {
   browser.tabs.sendMessage(tab.id, {
-    newTitle: "###",
+    badgeText: "!",
   });
 }
 
@@ -34,7 +33,6 @@ function onExecuted(id, result) {
   querying.then(messageTab);
 }
 
-
 browser.menus.create({
   id: "mark-my-tab",
   type: "normal",
@@ -42,14 +40,14 @@ browser.menus.create({
   contexts: ["tab"],
 });
 
-
 browser.contextMenus.onClicked.addListener((info, tab) => {
   if (info.menuItemId === "mark-my-tab") {
-    console.log(info);
-    console.log(tab);
-    let executing = browser.tabs.executeScript(tab.id, {
+    //console.log(info);
+    //console.log(tab);
+    var executing = browser.tabs.executeScript(tab.id, {
       file: "mark-my-tab.js",
     });
+
     executing.then(() => {
       onExecuted(tab.id);
     });

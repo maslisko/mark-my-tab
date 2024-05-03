@@ -16,6 +16,12 @@
     "tabs",
     "storage"
   ],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["badger.js"]
+    }
+  ],
   "background": {
     "scripts": ["background.js"]
   },
