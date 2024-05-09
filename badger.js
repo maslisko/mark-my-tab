@@ -65,10 +65,12 @@ class Badger {
     }
   
     _drawFavicon() {
+      console.log("drawing favicon");
       this.faviconEL.setAttribute("href", this.dataURL);
     }
   
     _draw() {
+      console.log("drawing");      
       this._drawIcon();
       if (this.value) this._drawShape();
       if (this.value) this._drawVal();
@@ -76,6 +78,7 @@ class Badger {
     }
   
     _setup() {
+      console.log("setting up");
       this.faviconSize = this.img.naturalWidth;
       this.badgeSize = this.faviconSize * this.size;
       this.canvas.width = this.faviconSize;
@@ -97,6 +100,7 @@ class Badger {
     // Public functions / methods:
   
     update() {
+      console.log("updating");
       //this._value = Math.min(99, parseInt(this._value, 10));
       if (this.img) {
         this._draw();

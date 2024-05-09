@@ -1,4 +1,5 @@
-console.log(`I am here`);
+// https://stackoverflow.com/questions/260857/changing-website-favicon-dynamically
+//
 
 const permissionsToRequest = {
   permissions: ["tabs"],
@@ -21,6 +22,29 @@ async function requestPermissions() {
   console.log(`Current permissions:`, currentPermissions);
 }
 
+browser.menus.create({
+  id: "mark-my-tab",
+  type: "checkbox",
+  title: "Mark My Tab",
+  contexts: ["tab"],
+});
+/*
+browser.menus.create({
+  id: "mark-my-tab-on",
+  parentId: "mark-my-tab",
+  type: "normal",
+  title: "Mark My Tab",
+  contexts: ["tab"],
+});
+
+browser.menus.create({
+  id: "mark-my-tab-off",
+  parentId: "mark-my-tab",
+  type: "normal",
+  title: "Unmark My Tab",
+  contexts: ["tab"],
+});
+*/
 function messageTab(tab) {
   browser.tabs.sendMessage(tab.id, {
     badgeText: "!",
@@ -33,12 +57,7 @@ function onExecuted(id, result) {
   querying.then(messageTab);
 }
 
-browser.menus.create({
-  id: "mark-my-tab",
-  type: "normal",
-  title: "Mark My Tab",
-  contexts: ["tab"],
-});
+
 
 browser.contextMenus.onClicked.addListener((info, tab) => {
   if (info.menuItemId === "mark-my-tab") {
@@ -52,4 +71,10 @@ browser.contextMenus.onClicked.addListener((info, tab) => {
       onExecuted(tab.id);
     });
   }
+  if (info.menuItemId === "mark-my-tab-off") {
+    console.log(info);
+    console.log(tab);
+  }
+  
+
 });
