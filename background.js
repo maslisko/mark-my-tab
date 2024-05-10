@@ -45,24 +45,44 @@ browser.menus.create({
   contexts: ["tab"],
 });
 */
-function messageTab(tab) {
+function messageTab(tab, text) {
+
+  //tab.favIconUrl
+
+  var myBadgerOptions = {src: tab.favIconUrl};
+  console.log("original tab.favIconUrl");
+  console.log(tab.favIconUrl);
+
+  let badger = new Badger(myBadgerOptions);
+  badger.update();
+  iconDataUrl = badger.dataURL;
+  console.log("new tab.favIconUrlOrig");
+  console.log(iconDataUrl);
+
+
   browser.tabs.sendMessage(tab.id, {
-    badgeText: "!",
+    badgeText: text,
+    iconDataUrl: iconDataUrl
   });
 }
 
-function onExecuted(id, result) {
-  console.log(id);
+function onExecuted(id) {
   let querying = browser.tabs.get(id);
-  querying.then(messageTab);
+  let text = "*";
+  console.log("onExecuted text: " + text);
+  querying.then((tab) => messageTab(tab, text));
 }
 
 
 
 browser.contextMenus.onClicked.addListener((info, tab) => {
   if (info.menuItemId === "mark-my-tab") {
-    //console.log(info);
-    //console.log(tab);
+    // store the original icon
+    tab.favIconUrlOrig = tab.favIconUrl;
+    // flag the tab to be marked
+    tab.isMarked = true;
+
+    console.log(tab);
     var executing = browser.tabs.executeScript(tab.id, {
       file: "mark-my-tab.js",
     });

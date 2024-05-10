@@ -23,7 +23,7 @@
     }
   ],
   "background": {
-    "scripts": ["background.js"]
+    "scripts": ["background.js", "badger.js"]
   },
   "browser_specific_settings": {
     "gecko": {
