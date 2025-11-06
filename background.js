@@ -24,49 +24,101 @@ async function requestPermissions() {
 
 browser.menus.create({
   id: "mark-my-tab",
-  type: "checkbox",
-  title: "Mark My Tab",
-  contexts: ["tab"],
-});
-/*
-browser.menus.create({
-  id: "mark-my-tab-on",
-  parentId: "mark-my-tab",
   type: "normal",
   title: "Mark My Tab",
   contexts: ["tab"],
 });
 
 browser.menus.create({
-  id: "mark-my-tab-off",
+  id: "mark-my-tab-red",
   parentId: "mark-my-tab",
   type: "normal",
-  title: "Unmark My Tab",
+  title: "Red",
   contexts: ["tab"],
 });
-*/
-function messageTab(tab, text) {
-  var myBadgerOptions = { src: tab.favIconUrl };
+
+browser.menus.create({
+  id: "mark-my-tab-#00FF00",
+  parentId: "mark-my-tab",
+  type: "normal",
+  title: "Green",
+  contexts: ["tab"],
+});
+
+browser.menus.create({
+  id: "mark-my-tab-#0000FF",
+  parentId: "mark-my-tab",
+  type: "normal",
+  title: "Blue",
+  contexts: ["tab"],
+});
+
+browser.menus.create({
+  id: "mark-my-tab-#FFFF00",
+  parentId: "mark-my-tab",
+  type: "normal",
+  title: "Yellow",
+  contexts: ["tab"],
+});
+
+browser.menus.create({
+  id: "mark-my-tab-#FF00FF",
+  parentId: "mark-my-tab",
+  type: "normal",
+  title: "Magenta",
+  contexts: ["tab"],
+});
+
+browser.menus.create({
+  id: "mark-my-tab-#00FFFF",
+  parentId: "mark-my-tab",
+  type: "normal",
+  title: "Cyan",
+  contexts: ["tab"],
+});
+
+browser.menus.create({
+  id: "mark-my-tab-#FFA500",
+  parentId: "mark-my-tab",
+  type: "normal",
+  title: "Orange",
+  contexts: ["tab"],
+});
+
+browser.menus.create({
+  id: "mark-my-tab-#800080",
+  parentId: "mark-my-tab",
+  type: "normal",
+  title: "Purple",
+  contexts: ["tab"],
+});
+
+function messageTab(tab, color) {
+  var myBadgerOptions = { src: tab.favIconUrl, backgroundColor: color };
 
   let badger = new Badger(myBadgerOptions);
   badger.update((dataURL) => {
     iconDataUrl = badger.dataURL;
 
     browser.tabs.sendMessage(tab.id, {
-      badgeText: text,
       iconDataUrl: dataURL,
     });
   });
 }
 
-function onExecuted(id) {
+function onExecuted(id, color) {
+//function onExecuted(id) {
+  console.log("onExecuted color:", color);
   let querying = browser.tabs.get(id);
-  let text = "*";
-  querying.then((tab) => messageTab(tab, text));
+  querying.then((tab) => messageTab(tab, color));
 }
 
 browser.contextMenus.onClicked.addListener((info, tab) => {
-  if (info.menuItemId === "mark-my-tab") {
+  let color = info.menuItemId.split("mark-my-tab-")[1];
+  if (info.menuItemId.startsWith("mark-my-tab")) {
+  //if (info.menuItemId === "mark-my-tab") {
+    console.log("Marking tab with color:", color);
+
     // store the original icon
     tab.favIconUrlOrig = tab.favIconUrl;
     // flag the tab to be marked
@@ -78,12 +130,8 @@ browser.contextMenus.onClicked.addListener((info, tab) => {
     });
 
     executing.then(() => {
-      onExecuted(tab.id);
+      onExecuted(tab.id, color);
+      //onExecuted(tab.id);
     });
   }
-
-  // if (info.menuItemId === "mark-my-tab-off") {
-  //   console.log(info);
-  //   console.log(tab);
-  // }
 });
