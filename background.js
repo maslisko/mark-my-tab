@@ -46,34 +46,24 @@ browser.menus.create({
 });
 */
 function messageTab(tab, text) {
-
-  //tab.favIconUrl
-
-  var myBadgerOptions = {src: tab.favIconUrl};
-  console.log("original tab.favIconUrl");
-  console.log(tab.favIconUrl);
+  var myBadgerOptions = { src: tab.favIconUrl };
 
   let badger = new Badger(myBadgerOptions);
-  badger.update();
-  iconDataUrl = badger.dataURL;
-  console.log("new tab.favIconUrlOrig");
-  console.log(iconDataUrl);
+  badger.update((dataURL) => {
+    iconDataUrl = badger.dataURL;
 
-
-  browser.tabs.sendMessage(tab.id, {
-    badgeText: text,
-    iconDataUrl: iconDataUrl
+    browser.tabs.sendMessage(tab.id, {
+      badgeText: text,
+      iconDataUrl: dataURL,
+    });
   });
 }
 
 function onExecuted(id) {
   let querying = browser.tabs.get(id);
   let text = "*";
-  console.log("onExecuted text: " + text);
   querying.then((tab) => messageTab(tab, text));
 }
-
-
 
 browser.contextMenus.onClicked.addListener((info, tab) => {
   if (info.menuItemId === "mark-my-tab") {
@@ -82,7 +72,7 @@ browser.contextMenus.onClicked.addListener((info, tab) => {
     // flag the tab to be marked
     tab.isMarked = true;
 
-    console.log(tab);
+    console.log("tab id: " + tab.id);
     var executing = browser.tabs.executeScript(tab.id, {
       file: "mark-my-tab.js",
     });
@@ -91,10 +81,9 @@ browser.contextMenus.onClicked.addListener((info, tab) => {
       onExecuted(tab.id);
     });
   }
-  if (info.menuItemId === "mark-my-tab-off") {
-    console.log(info);
-    console.log(tab);
-  }
-  
 
+  // if (info.menuItemId === "mark-my-tab-off") {
+  //   console.log(info);
+  //   console.log(tab);
+  // }
 });

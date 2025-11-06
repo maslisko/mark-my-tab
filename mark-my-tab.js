@@ -1,28 +1,19 @@
 function setIcon(iconDataUrl) {
-    console.log("setIcon");
-    console.log(iconDataUrl);
-    
-    let faviconEl = document.querySelector("link[rel*=icon]");
-    if (!faviconEl){
-      console.log("No favicon element found. Creating one now.");
-      faviconEl = document.createElement('link');
-      faviconEl.rel = 'icon';
-      faviconEl.href = '';
-      document.getElementsByTagName('head')[0].appendChild(faviconEl);
-    } 
-    
-    faviconEl.setAttribute("href", iconDataUrl);
+  // Remove all existing <link rel="icon"> elements
+  document.querySelectorAll("link[rel='icon']").forEach((el) => el.remove());
+
+  // Create a new <link rel="icon"> element
+  let faviconEl = document.createElement("link");
+  faviconEl.rel = "icon";
+  faviconEl.href = iconDataUrl;
+
+  // Append the new favicon to the <head>
+  document.head.appendChild(faviconEl);
 }
 
 function markMyPageReceiver(request, sender, sendResponse) {
-//    myBadger.value = request.badgeText;
-    console.log(request.iconDataUrl);
-    setIcon(request.iconDataUrl);
+  setIcon(request.iconDataUrl);
 }
 
-// var myBadgerOptions = {};
-// var myBadger = myBadger? myBadger : new Badger(myBadgerOptions);
 browser.runtime.onMessage.removeListener(markMyPageReceiver);
 browser.runtime.onMessage.addListener(markMyPageReceiver);
-
-
