@@ -22,74 +22,91 @@ async function requestPermissions() {
   console.log(`Current permissions:`, currentPermissions);
 }
 
+// Color definitions map
+const colorDefinitions = new Map([
+  ["#f31457ff", "Red"],
+  ["#ffcb3bff", "Yellow"],
+  ["#75d137ff", "Green"],
+  ["#0097e6ed", "Blue"],
+  ["#9c88ff", "Purple"],
+  ["#f5f6fa", "White"],
+  ["#2f3640", "Dark blue"]
+]);
+
+// Function to create a colored icon data URL
+function createColorIcon(color, size = 16) {
+  const canvas = document.createElement('canvas');
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext('2d');
+  
+  const radius = size * 0.2; // 20% of size for rounded corners
+  const x = 1;
+  const y = 1;
+  const width = size - 2;
+  const height = size - 2;
+  
+  // Draw rounded rectangle
+  ctx.fillStyle = color;
+  ctx.beginPath();
+  ctx.moveTo(x + radius, y);
+  ctx.lineTo(x + width - radius, y);
+  ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+  ctx.lineTo(x + width, y + height - radius);
+  ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+  ctx.lineTo(x + radius, y + height);
+  ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+  ctx.lineTo(x, y + radius);
+  ctx.quadraticCurveTo(x, y, x + radius, y);
+  ctx.closePath();
+  ctx.fill();
+  
+  // Add border
+  ctx.strokeStyle = '#777';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+  
+  return canvas.toDataURL();
+}
+
+// Create main menu item
 browser.menus.create({
   id: "mark-my-tab",
   type: "normal",
   title: "Mark My Tab",
   contexts: ["tab"],
+  icons: null
 });
 
+// Create color menu items using loop
+for (const [colorCode, colorName] of colorDefinitions) {
+  browser.menus.create({
+    id: `mark-my-tab-${colorCode}`,
+    parentId: "mark-my-tab",
+    type: "normal",
+    title: colorName,
+    contexts: ["tab"],
+    icons: {
+      "16": createColorIcon(colorCode, 16),
+      "32": createColorIcon(colorCode, 32)
+    }
+  });
+}
+
+// Create separator
 browser.menus.create({
-  id: "mark-my-tab-red",
+  id: "mark-my-tab-separator",
   parentId: "mark-my-tab",
-  type: "normal",
-  title: "Red",
+  type: "separator",
   contexts: ["tab"],
 });
 
+// Create "None" option
 browser.menus.create({
-  id: "mark-my-tab-#00FF00",
+  id: "mark-my-tab-none",
   parentId: "mark-my-tab",
   type: "normal",
-  title: "Green",
-  contexts: ["tab"],
-});
-
-browser.menus.create({
-  id: "mark-my-tab-#0000FF",
-  parentId: "mark-my-tab",
-  type: "normal",
-  title: "Blue",
-  contexts: ["tab"],
-});
-
-browser.menus.create({
-  id: "mark-my-tab-#FFFF00",
-  parentId: "mark-my-tab",
-  type: "normal",
-  title: "Yellow",
-  contexts: ["tab"],
-});
-
-browser.menus.create({
-  id: "mark-my-tab-#FF00FF",
-  parentId: "mark-my-tab",
-  type: "normal",
-  title: "Magenta",
-  contexts: ["tab"],
-});
-
-browser.menus.create({
-  id: "mark-my-tab-#00FFFF",
-  parentId: "mark-my-tab",
-  type: "normal",
-  title: "Cyan",
-  contexts: ["tab"],
-});
-
-browser.menus.create({
-  id: "mark-my-tab-#FFA500",
-  parentId: "mark-my-tab",
-  type: "normal",
-  title: "Orange",
-  contexts: ["tab"],
-});
-
-browser.menus.create({
-  id: "mark-my-tab-#800080",
-  parentId: "mark-my-tab",
-  type: "normal",
-  title: "Purple",
+  title: "None",
   contexts: ["tab"],
 });
 

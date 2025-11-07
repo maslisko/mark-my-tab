@@ -1,6 +1,6 @@
-# Flag The Tab
+# Mark My Tab
 
-A small Firefox extension for flagging tabs which you want to revisit in a near future.
+A small Firefox extension for marking tabs which you want to revisit in a near future.
 
 Sometimes you need just something very, very simple. No new panels, no configuration, just a click away.
 
