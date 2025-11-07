@@ -6,6 +6,11 @@ const permissionsToRequest = {
   origins: ["<all_urls>"],
 };
 
+const FAVICON_ORIG_ID = "mark-my-tab-favicon-orig";
+
+// Store original favicons per tab
+const originalFavicons = new Map();
+
 async function requestPermissions() {
   function onResponse(response) {
     if (response) {
@@ -30,22 +35,22 @@ const colorDefinitions = new Map([
   ["#0097e6ed", "Blue"],
   ["#9c88ff", "Purple"],
   ["#f5f6fa", "White"],
-  ["#2f3640", "Dark blue"]
+  ["#2f3640", "Granite"],
 ]);
 
 // Function to create a colored icon data URL
 function createColorIcon(color, size = 16) {
-  const canvas = document.createElement('canvas');
+  const canvas = document.createElement("canvas");
   canvas.width = size;
   canvas.height = size;
-  const ctx = canvas.getContext('2d');
-  
+  const ctx = canvas.getContext("2d");
+
   const radius = size * 0.2; // 20% of size for rounded corners
   const x = 1;
   const y = 1;
   const width = size - 2;
   const height = size - 2;
-  
+
   // Draw rounded rectangle
   ctx.fillStyle = color;
   ctx.beginPath();
@@ -60,12 +65,12 @@ function createColorIcon(color, size = 16) {
   ctx.quadraticCurveTo(x, y, x + radius, y);
   ctx.closePath();
   ctx.fill();
-  
+
   // Add border
-  ctx.strokeStyle = '#777';
+  ctx.strokeStyle = "#777";
   ctx.lineWidth = 1;
   ctx.stroke();
-  
+
   return canvas.toDataURL();
 }
 
@@ -75,7 +80,7 @@ browser.menus.create({
   type: "normal",
   title: "Mark My Tab",
   contexts: ["tab"],
-  icons: null
+  icons: null,
 });
 
 // Create color menu items using loop
@@ -87,9 +92,9 @@ for (const [colorCode, colorName] of colorDefinitions) {
     title: colorName,
     contexts: ["tab"],
     icons: {
-      "16": createColorIcon(colorCode, 16),
-      "32": createColorIcon(colorCode, 32)
-    }
+      16: createColorIcon(colorCode, 16),
+      32: createColorIcon(colorCode, 32),
+    },
   });
 }
 
@@ -111,20 +116,26 @@ browser.menus.create({
 });
 
 function messageTab(tab, color) {
-  var myBadgerOptions = { src: tab.favIconUrl, backgroundColor: color };
+  // Get the original favicon URL from our storage
+  const originalFaviconUrl = originalFavicons.get(tab.id) || tab.favIconUrl;
 
-  let badger = new Badger(myBadgerOptions);
-  badger.update((dataURL) => {
-    iconDataUrl = badger.dataURL;
+  if (color === "none") {
+    // Restore original favicon
+    browser.tabs.sendMessage(tab.id, { iconDataUrl: originalFaviconUrl });
+  } else {
+    // Create badge with color
+    var myBadgerOptions = { src: originalFaviconUrl, backgroundColor: color };
+    let badger = new Badger(myBadgerOptions);
 
-    browser.tabs.sendMessage(tab.id, {
-      iconDataUrl: dataURL,
+    badger.update((dataURL) => {
+      browser.tabs.sendMessage(tab.id, {
+        iconDataUrl: dataURL,
+      });
     });
-  });
+  }
 }
 
 function onExecuted(id, color) {
-//function onExecuted(id) {
   console.log("onExecuted color:", color);
   let querying = browser.tabs.get(id);
   querying.then((tab) => messageTab(tab, color));
@@ -132,12 +143,14 @@ function onExecuted(id, color) {
 
 browser.contextMenus.onClicked.addListener((info, tab) => {
   let color = info.menuItemId.split("mark-my-tab-")[1];
-  if (info.menuItemId.startsWith("mark-my-tab")) {
-  //if (info.menuItemId === "mark-my-tab") {
-    console.log("Marking tab with color:", color);
 
-    // store the original icon
-    tab.favIconUrlOrig = tab.favIconUrl;
+  if (info.menuItemId.startsWith("mark-my-tab")) {
+    // Store original favicon URL if not already stored
+    if (!originalFavicons.has(tab.id)) {
+      console.log("Storing original favicon:", tab.favIconUrl);
+      originalFavicons.set(tab.id, tab.favIconUrl);
+    }
+
     // flag the tab to be marked
     tab.isMarked = true;
 
@@ -148,7 +161,6 @@ browser.contextMenus.onClicked.addListener((info, tab) => {
 
     executing.then(() => {
       onExecuted(tab.id, color);
-      //onExecuted(tab.id);
     });
   }
 });
