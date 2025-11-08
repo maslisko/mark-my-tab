@@ -22,7 +22,8 @@
   },
   "browser_specific_settings": {
     "gecko": {
-      "id": "mark-my-tab@maslisko"
+      "id": "mark-my-tab@maslisko",
+      "data_collection_permissions": []
     }
   }
 }
