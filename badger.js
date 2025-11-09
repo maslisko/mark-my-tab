@@ -77,10 +77,10 @@ class Badger {
     this.ctx.beginPath();
     this.ctx.textBaseline = "middle";
     this.ctx.textAlign = "center";
-    this.ctx.font = `bold ${this.badgeSize * 0.82}px Arial`;
+    this.ctx.font = `bold ${this.badgeSize}px Arial`;
     this.ctx.fillStyle = this.color;
     this.ctx.fillText(
-      this.value,
+      "•",
       this.badgeSize / 2 + this.offset.x,
       this.badgeSize / 2 + this.offset.y + margin
     );
@@ -91,10 +91,7 @@ class Badger {
     this._drawIcon();
     //this._drawShapeBgr();
     this._drawShape();
-
-    if (this.value) {
-      this._drawVal();
-    }
+    this._drawVal();
   }
 
   _setup() {
