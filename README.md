@@ -1,17 +1,19 @@
 # Mark My Tab
 
-A small Firefox extension for marking tabs which you want to revisit in a near future. A colored badge is added to tab's favicon. 7 carefully selected colors are available. 
+A small Firefox extension for marking tabs which you want to revisit in a near future. A colored badge is added to tab's favicon. 7 carefully selected colors are available.
 
 ![Mark My Tab context menu](screenshots/mark-my-tab_badged_favicon.png)
 
-
-# Using
+## Using
 
 After installation, a new tab context menu item "Mark My Tab" is available. Choose the color you want. To remove the badge, select "None".
 
+__Notes:__
+
+- Refreshing a tab removes the badge
+- Marking does not work on special tabs (like the New Tab, Settings or Add-ons)
+
 ![Mark My Tab context menu](screenshots/mark-my-tab_context_menu.png)
-
-
 
 ## Running Locally
 
