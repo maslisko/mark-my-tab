@@ -29,20 +29,20 @@ async function requestPermissions() {
 
 // Color definitions map
 const colorDefinitions = new Map([
-  ["#f31457ff", "Red"],
-  ["#ffcb3bff", "Yellow"],
-  ["#75d137ff", "Green"],
-  ["#0097e6ed", "Blue"],
-  ["#9c88ff", "Purple"],
-  ["#f5f6fa", "White"],
-  ["#2f3640", "Granite"],
+  ["#f31457ff", ["#fff", "Red"]],
+  ["#ffcb3bff", ["#000", "Yellow"]],
+  ["#75d137ff", ["#000", "Green"]],
+  ["#0097e6ed", ["#fff", "Blue"]],
+  ["#9c88ff", ["#fff", "Purple"]],
+  ["#f5f6fa", ["#000", "White"]],
+  ["#2f3640", ["#fff", "Granite"]],
 ]);
 
 // Function to create a colored icon data URL
-function createColorIcon(color, size = 16) {
+function createColorIcon(bgColor, fgColor, size = 16) {
   const canvas = document.createElement("canvas");
   canvas.width = size;
-  canvas.height = size;
+  canvas.height = size; 
   const ctx = canvas.getContext("2d");
 
   const radius = size * 0.2; // 20% of size for rounded corners
@@ -52,7 +52,7 @@ function createColorIcon(color, size = 16) {
   const height = size - 2;
 
   // Draw rounded rectangle
-  ctx.fillStyle = color;
+  ctx.fillStyle = bgColor;
   ctx.beginPath();
   ctx.moveTo(x + radius, y);
   ctx.lineTo(x + width - radius, y);
@@ -71,6 +71,16 @@ function createColorIcon(color, size = 16) {
   ctx.lineWidth = 1;
   ctx.stroke();
 
+ // Draw check mark
+  ctx.strokeStyle = fgColor;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.fillStyle = fgColor;
+  ctx.beginPath();
+  ctx.arc(x + width * 0.5, y + height * 0.5, width * 0.10, 0, 2 * Math.PI);
+  ctx.fill();
+  ctx.stroke();
+
   return canvas.toDataURL();
 }
 
@@ -84,16 +94,16 @@ browser.menus.create({
 });
 
 // Create color menu items using loop
-for (const [colorCode, colorName] of colorDefinitions) {
+for (const [colorCode, colorPair] of colorDefinitions) {
   browser.menus.create({
     id: `mark-my-tab-${colorCode}`,
     parentId: "mark-my-tab",
     type: "normal",
-    title: colorName,
+    title: colorPair[1],
     contexts: ["tab"],
     icons: {
-      16: createColorIcon(colorCode, 16),
-      32: createColorIcon(colorCode, 32),
+      16: createColorIcon(colorCode, colorPair[0], 16),
+      32: createColorIcon(colorCode, colorPair[0], 32),
     },
   });
 }
@@ -115,16 +125,20 @@ browser.menus.create({
   contexts: ["tab"],
 });
 
-function messageTab(tab, color) {
+function messageTab(tab, bgColor, fgColor) {
   // Get the original favicon URL from our storage
   const originalFaviconUrl = originalFavicons.get(tab.id) || tab.favIconUrl;
 
-  if (color === "none") {
+  if (bgColor === "none") {
     // Restore original favicon
     browser.tabs.sendMessage(tab.id, { iconDataUrl: originalFaviconUrl });
   } else {
     // Create badge with color
-    var myBadgerOptions = { src: originalFaviconUrl, backgroundColor: color };
+    var myBadgerOptions = {
+      src: originalFaviconUrl,
+      backgroundColor: bgColor,
+      color: fgColor,
+    };
     let badger = new Badger(myBadgerOptions);
 
     badger.update((dataURL) => {
@@ -135,16 +149,17 @@ function messageTab(tab, color) {
   }
 }
 
-function onExecuted(id, color) {
-  console.log("onExecuted color:", color);
+function onExecuted(id, bgColor, fgColor) {
+  console.log("onExecuted color:", bgColor);
   let querying = browser.tabs.get(id);
-  querying.then((tab) => messageTab(tab, color));
+  querying.then((tab) => messageTab(tab, bgColor, fgColor));
 }
 
 browser.contextMenus.onClicked.addListener((info, tab) => {
-  let color = info.menuItemId.split("mark-my-tab-")[1];
+  if (info.menuItemId.startsWith("mark-my-tab-")) {
+    let bgColor = info.menuItemId.split("mark-my-tab-")[1];
+    let fgColor = colorDefinitions.get(bgColor)[0];
 
-  if (info.menuItemId.startsWith("mark-my-tab")) {
     // Store original favicon URL if not already stored
     if (!originalFavicons.has(tab.id)) {
       console.log("Storing original favicon:", tab.favIconUrl);
@@ -160,7 +175,7 @@ browser.contextMenus.onClicked.addListener((info, tab) => {
     });
 
     executing.then(() => {
-      onExecuted(tab.id, color);
+      onExecuted(tab.id, bgColor, fgColor);
     });
   }
 });

@@ -12,7 +12,7 @@ class Badger {
       {
         backgroundColor: "rgba(255, 0, 106, 1)",
         color: "#fff",
-        size: 0.5, // 0..1 (Scale in respect to the favicon image size)
+        size: 0.6, // 0..1 (Scale in respect to the favicon image size)
         position: "se", // Position inside favicon "n", "e", "s", "w", "ne", "nw", "se", "sw"
         radius: 4, // Border radius
         src: "", // Favicon source (dafaults to the <link> icon href)
