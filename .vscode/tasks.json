@@ -1,13 +1,41 @@
 {
-	"version": "2.0.0",
-	"tasks": [
-		{
-			"label": "Build XPI",
-			"type": "shell",
-			"command": "zip",
-            "args": ["-r", "mark-my-tab.xpi", ".", "-x", "\".vscode/*\"", "-x", "\\*.xpi", "-x", "\".git/*\"", "-x", ".gitignore", "-x", ".DS_Store"],
-			"problemMatcher": [],
-			"group": "build"
-		}
-	]
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build XPI",
+      "type": "shell",
+      "command": "zip",
+      "args": [
+        "-r",
+        "mark-my-tab.xpi",
+        ".",
+        "-x",
+        "\".vscode/*\"",
+        "-x",
+        "\\*.xpi",
+        "-x",
+        "\".git/*\"",
+        "-x",
+        ".gitignore",
+        "-x",
+        ".DS_Store"
+      ],
+      "problemMatcher": [],
+      "group": "build"
+    },
+    {
+      "label": "Build XPI",
+	  "detail": "web-ext build",
+      "type": "shell",
+      "command": "web-ext",
+      "args": [
+        "build",
+		"--overwrite-dest",
+		"--filename",
+		"mark-my-tab.xpi"
+      ],
+      "problemMatcher": [],
+      "group": "build"
+    }
+  ]
 }
