@@ -24,7 +24,6 @@ class Badger {
 
     this.canvas = document.createElement("canvas");
     this.ctx = this.canvas.getContext("2d");
-    // OK
   }
 
   _drawIcon() {
@@ -32,7 +31,7 @@ class Badger {
     this.ctx.drawImage(this.img, 0, 0, this.faviconSize, this.faviconSize);
   }
 
-  _drawShapeBgr() {
+  _drawBgrBorder() {
     const r = this.radius + 1;
     const xa = this.offset.x - 1;
     const ya = this.offset.y - 1;
@@ -52,7 +51,7 @@ class Badger {
     this.ctx.closePath();
   }
 
-  _drawShape() {
+  _drawBgr() {
     const r = this.radius;
     const xa = this.offset.x;
     const ya = this.offset.y;
@@ -72,7 +71,7 @@ class Badger {
     this.ctx.closePath();
   }
 
-  _drawVal() {
+  _drawSymbol() {
     const margin = (this.badgeSize * 0.18) / 2;
     this.ctx.beginPath();
     this.ctx.textBaseline = "middle";
@@ -90,8 +89,8 @@ class Badger {
   _draw() {
     this._drawIcon();
     //this._drawShapeBgr();
-    this._drawShape();
-    this._drawVal();
+    this._drawBgr();
+    this._drawSymbol();
   }
 
   _setup() {
@@ -119,8 +118,8 @@ class Badger {
 
   update(callback) {
     console.log("updating");
-    //this._value = Math.min(99, parseInt(this._value, 10));
     this.img = new Image();
+
     // Set up the onload event to draw the image on the canvas
     this.img.onload = () => {
       // Set up the canvas dimensions based on the image size
@@ -151,6 +150,5 @@ class Badger {
 
   set value(val) {
     this._value = val;
-    //this.update();
   }
 }
