@@ -42,7 +42,7 @@ const colorDefinitions = new Map([
 function createColorIcon(bgColor, fgColor, size = 16) {
   const canvas = document.createElement("canvas");
   canvas.width = size;
-  canvas.height = size; 
+  canvas.height = size;
   const ctx = canvas.getContext("2d");
 
   const radius = size * 0.2; // 20% of size for rounded corners
@@ -71,13 +71,13 @@ function createColorIcon(bgColor, fgColor, size = 16) {
   ctx.lineWidth = 1;
   ctx.stroke();
 
- // Draw check mark
+  // Draw check mark
   ctx.strokeStyle = fgColor;
   ctx.lineWidth = 2;
   ctx.beginPath();
   ctx.fillStyle = fgColor;
   ctx.beginPath();
-  ctx.arc(x + width * 0.5, y + height * 0.5, width * 0.10, 0, 2 * Math.PI);
+  ctx.arc(x + width * 0.5, y + height * 0.5, width * 0.1, 0, 2 * Math.PI);
   ctx.fill();
   ctx.stroke();
 
@@ -156,20 +156,20 @@ function onExecuted(id, bgColor, fgColor) {
 }
 
 browser.contextMenus.onClicked.addListener((info, tab) => {
+  var bgColor, fgColor;
   if (info.menuItemId.startsWith("mark-my-tab-")) {
-    let bgColor = info.menuItemId.split("mark-my-tab-")[1];
-    let fgColor = colorDefinitions.get(bgColor)[0];
+    if (info.menuItemId === "mark-my-tab-none") {
+      bgColor = "none";
+      fgColor = null;
+    } else {
+      bgColor = info.menuItemId.split("mark-my-tab-")[1];
+      fgColor = colorDefinitions.get(bgColor)[0];
 
-    // Store original favicon URL if not already stored
-    if (!originalFavicons.has(tab.id)) {
-      console.log("Storing original favicon:", tab.favIconUrl);
-      originalFavicons.set(tab.id, tab.favIconUrl);
+      // Store original favicon URL if not already stored
+      if (!originalFavicons.has(tab.id)) {
+        originalFavicons.set(tab.id, tab.favIconUrl);
+      }
     }
-
-    // flag the tab to be marked
-    tab.isMarked = true;
-
-    console.log("tab id: " + tab.id);
     var executing = browser.tabs.executeScript(tab.id, {
       file: "mark-my-tab.js",
     });

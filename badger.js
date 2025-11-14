@@ -33,10 +33,10 @@ class Badger {
 
   _drawBgrBorder() {
     const r = this.radius + 1;
-    const xa = this.offset.x - 1;
-    const ya = this.offset.y - 1;
-    const xb = this.offset.x + this.badgeSize + 2;
-    const yb = this.offset.y + this.badgeSize + 2;
+    const xa = this.offset.x - 2;
+    const ya = this.offset.y - 2;
+    const xb = this.offset.x + this.badgeSize - 1;
+    const yb = this.offset.y + this.badgeSize - 1;
     this.ctx.beginPath();
     this.ctx.moveTo(xb - r, ya);
     this.ctx.quadraticCurveTo(xb, ya, xb, ya + r);
@@ -76,7 +76,7 @@ class Badger {
     this.ctx.beginPath();
     this.ctx.textBaseline = "middle";
     this.ctx.textAlign = "center";
-    this.ctx.font = `bold ${this.badgeSize}px Arial`;
+    this.ctx.font = `bold ${this.badgeSize+4}px Arial`;
     this.ctx.fillStyle = this.color;
     this.ctx.fillText(
       "•",
@@ -88,7 +88,7 @@ class Badger {
 
   _draw() {
     this._drawIcon();
-    //this._drawShapeBgr();
+    //this._drawBgrBorder();
     this._drawBgr();
     this._drawSymbol();
   }
