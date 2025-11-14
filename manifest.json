@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Mark My Tab",
-  "version": "1.0",
+  "version": "1.1",
   "description": "Marks tabs with a badge of a predefined color",
   "homepage_url": "https://github.com/maslisko/mark-my-tab",
   "icons": {
